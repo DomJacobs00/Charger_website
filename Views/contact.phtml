@@ -1,0 +1,45 @@
+<?php  require_once ('template/header.phtml') ?>
+<body id="mainbody">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Contact the owner</h4>
+        </div>
+        <form method="post" class="row g-3">
+            <div class="col-md-5">
+                <label for="para1" class="form-label">To: <?= $userName; ?> </label>
+            </div>
+            <div class="col-md-12">
+                <label for="message" class="form-label">Message:</label>
+                <?php if (isset($_GET['noInput'])) :?>
+                    <textarea name="message" id="" cols="20" rows="3" class="form-control is-invalid"></textarea>
+                    <div class="invalid-feedback">
+                        <small>Message not sent. Please add the message.</small>
+                    </div>
+                <?php elseif(isset($_GET['sent'])) : ?>
+                    <textarea name="message" id="" cols="20" rows="3" class="form-control is-valid"></textarea>
+                    <div class="valid-feedback">
+                        Message sent.
+                    </div>
+                <?php else :?>
+                    <textarea name="message" id="" cols="20" rows="3" class="form-control"></textarea>
+                <?php endif ?>
+            </div>
+            <div class="col-md-12">
+                <label for="dateSelect">Please Select the date:</label>
+                <input type="datetime-local" name="chargeDate">
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit" name="send_message">Send Message</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+
+
+
+
+
+
+<?php require_once ('template/footer.phtml') ?>
+

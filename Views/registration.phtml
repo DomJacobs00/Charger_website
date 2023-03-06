@@ -1,0 +1,46 @@
+<?php require('template/header.phtml') ?>
+<body id="mainbody">
+    <form method="post" action="">
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <?php if(isset($_GET['noUsername']) or isset($_GET['noInput'])): ?>
+                <!-- if nothing is entered or there is no username error given-->
+                <input type="email" class="form-control is-invalid" placeholder="Enter your Email" name="email">
+                <div class="invalid-feedback">
+                    <small>This field is required</small>
+                </div>
+            <?php else: ?>
+                <input type="email" class="form-control" placeholder="Enter your Email" name="email">
+            <?php endif ?>
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <?php if(isset($_GET['noRealName']) or isset($_GET['noInput'])): ?>
+                <!-- if nothing is entered or there is no real name error given-->
+                <input type="text" class="form-control is-invalid" placeholder="Enter your first name"  name="name">
+                <div class="invalid-feedback">
+                    <small>This field is required</small>
+                </div>
+            <?php else: ?>
+                <input type="text" class="form-control" placeholder="Enter your first name"  name="name">
+            <?php endif ?>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <?php if(isset($_GET['noPassword']) or isset($_GET['noInput'])): ?>
+                <!-- if nothing is entered or there is no password error given-->
+                <input type="password" class="form-control is-invalid" placeholder="Password" name="password">
+                <div class="invalid-feedback">
+                    <small>This field is required</small>
+                </div>
+            <?php else: ?>
+                <input type="password" class="form-control" placeholder="Password" name="password">
+            <?php endif ?>
+            <small class="form-text text-muted">Please enter a strong password including numbers and special characters.</small>
+        </div>
+        <div class="form-group">
+            <input type="submit" class=" btn btn-primary" name="register_button" value="Register">
+        </div>
+    </form>
+</body>
+<?php require('template/footer.phtml') ?>

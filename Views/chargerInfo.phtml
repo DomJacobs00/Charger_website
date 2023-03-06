@@ -1,0 +1,45 @@
+<?php require('template/header.phtml') ?>
+<body id="mainbody">
+    <div class="card">
+        <div class="card-body">
+            <h4>Find a Charger</h4>
+        </div>
+        <form method="post" action="" class="row g-3" id="findCharger">
+            <div class="col-md-4">
+                <?php if (!isset($_GET['notNumeric'])) :?> <!-- checking process that checks if is_numeric(keyword) -->
+                    <input type="text" class="form-control" name="keyword" placeholder="Please enter a keyword">
+                <?php else : ?>
+                    <input type="text" class="form-control is-invalid" name="keyword" placeholder="Please enter a keyword">
+                    <div class="invalid-feedback">
+                        Price has to be a number!
+                    </div>
+                <?php endif ?>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="options">
+                    <option selected>Search By</option>
+                    <option value="1">Adress</option>
+                    <option value="2">PostCode</option>
+                    <option value="3">Price</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary" type="submit" name="look_for_charger">Find</button>
+            </div>
+        </form>
+        <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post"> <!--gets Charger data from database and displays-->
+            <table class="table table-striped table-hover">
+                <thread>
+                    <tr><th>Adress 1</th><th>Adress 2</th><th>PostCode</th><th>Cost</th><th>Options</th></tr>
+                </thread>
+                <tbody>
+                <?php
+                foreach ($view->chargerDataSet as $chargerData): ?>
+                    <tr><td><?=$chargerData->getAdress1()?></td><td><?=$chargerData->getAdress2()?></td><td><?=$chargerData->getPostcode()?></td><td><?=$chargerData->getCost()?></td><td><form method="post"><button class="btn btn-info" type="submit" name="contact" value="<?=$chargerData->getOwnerId();?>">Contact</button></form></td></tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</body>
+<?php require('template/footer.phtml') ?>

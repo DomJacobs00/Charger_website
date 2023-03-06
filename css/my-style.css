@@ -1,0 +1,65 @@
+main > .container {
+    padding: 60px 15px 0;
+}
+
+container
+{
+    
+    
+	margin-top: 100px;
+    margin-bottom: 100px;
+	min-height: 100%;
+    clear: both;
+}
+body
+{
+	
+	margin-top: 60px;
+    margin-bottom: 100px;
+	min-height: 100%;
+    clear: both;
+}
+
+img {
+    border-radius: 50%;
+}
+#findCharger{
+    padding: 15px 15px;
+}
+
+
+
+
+#title {
+    margin-top: 12px;
+    background-color: #fff;
+    color: #000;
+
+}
+
+
+#content {
+    background-color: #fff;
+    /*border-top: solid 6px #f00; */
+
+}
+
+#footer {
+	
+    /*margin_top: 20px;
+    text-align: center;
+    background-color: #000;
+    color: #fff; */
+}
+
+#loginbtn{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#logoutbtn{
+    margin-top: 10px;
+}
+#cards
+{
+    padding: 15px 15px;
+}
