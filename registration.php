@@ -44,7 +44,7 @@ if (isset($_POST["register_button"]))
             $usersDataSet = new UsersDataSet();
             $new_password = hash('sha1', $password);
             $view->usersDataSet = $usersDataSet->addUser( $username, $real_name, $new_password);
-            header("location: index.php");
+            header("location: index.php"); // replace this to window.location = "index.php"; with JavaScript
         }
     }
 }
