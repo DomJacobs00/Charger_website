@@ -43,7 +43,8 @@ if(isset($_POST["loginbutton"]))
  */
 if(isset($_POST["registerbutton"]))
 {
-    header("location: registration.php");
+    //header("location: registration.php");
+    echo '<script> window.location.href="registration.php"</script>';
 }
 /**
  * stops the session anywhere and requires to log in again for futher use
