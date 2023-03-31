@@ -29,12 +29,14 @@ if(isset($_POST["loginbutton"]))
         $_SESSION["realName"] = $view->login_details[0]->getRealName();
         $_SESSION["profilePicture"] = $view->login_details[0]->getProfilePicture();
         $login_status = true; // session has kept active
-        header("location: myAccount.php"); // relocation
+        //header("location: myAccount.php"); // relocation
+        echo '<script> window.location.href="myAccount.php"</script>';
     }
     else
     {
         $login_status = false; // session stoped
-        header("location: index.php?wrongDetails");//error handling
+        //header("location: index.php?wrongDetails");//error handling
+        echo '<script> window.location.href="index.php?wrongDetails"</script>';
         exit();
     }
 }
@@ -55,7 +57,8 @@ if(isset($_POST["logoutbutton"]))
     unset($_SESSION["login"]);
     session_destroy();
     $login_status = false;
-    header("location: index.php");
+   //header("location: index.php");
+    echo '<script> window.location.href="index.php"</script>';
 }
 
 

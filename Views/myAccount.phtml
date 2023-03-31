@@ -1,79 +1,80 @@
 <?php  require_once ('template/header.phtml') ?>
 <body id="mainbody">
-<div class="">
-    <div class="col">
-    </div>
-    <div class="card">
-        <div class="card-body">
+<div class="container">
+    <div class="row">
+        <div class="col-7">
 
-            <img src="<?= $profilePic; ?>" alt="">
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Name:  <?php  echo $realName; ?></li>
-            <li class="list-group-item">email adress: <?php echo $email;  ?></li>
-            <li class="list-group-item">Charger: <?php echo $chargerName; ?></li>
-        </ul>
-    </div>
-    <?php if(empty($view->chargerCheck)) : ?> <!-- if no charger add charger is shown -->
-                    <div class="card" id="cards">
+            <div class="card">
+                <div class="card-body">
+
+                    <img src="<?= $profilePic; ?>" alt="">
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Name:  <?php  echo $realName; ?></li>
+                    <li class="list-group-item">email adress: <?php echo $email;  ?></li>
+                    <li class="list-group-item">Charger: <?php echo $chargerName; ?></li>
+                </ul>
+            </div>
+            <?php if(empty($view->chargerCheck)) : ?> <!-- if no charger add charger is shown -->
+                <div class="card" id="cards">
+                    <div class="card-body">
                         <div class="card-body">
-                            <div class="card-body">
-                                <h4 class="card-title">Add a Charger</h4>
-                            </div
-                        </div>
-                        <form method="post" action="" class="row g-3">
-                            <div class="col-md-5">
-                                <?php if (!isset($_GET['duplicateFound'])) :?>
-                                    <label for="adressLine1" class="form-label"> Adress Line 1</label>
-                                    <input type="text" name="adressline1" class="form-control">
-                                <?php else : ?>
-                                    <input type="text" name="adressline1" class="form-control is-invalid">
-                                    <div class="invalid-feedback" >
-                                        Charger with this adress already exsists
-                                    </div>
-                                <?php endif ?>
-                            </div>
-                            <div class="col-md-5">
-                                <label for="adressLine2" class="form-label"> Adress Line 2</label>
-                                <input type="text" name="adressline2" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="postCode" class="form-label"> Post Code</label>
-                                <input type="text" name="postcode" class="form-control">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="latitude" class="form-label"> Latitude </label>
-                                <input type="text" name="latitude" class="form-control">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="longtitude" class="form-label"> Longtitude </label>
-                                <input type="text" name="longtitude" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="price" class="form-label"> Cost </label>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text">£</span>
-                                    <input type="text" name="pricein" class="form-control">
-                                    <span class="input-group-text">\hour</span>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary" type="submit" name="add_charger_button">Submit</button>
-                            </div>
-                        </form>
+                            <h4 class="card-title">Add a Charger</h4>
+                        </div
                     </div>
-    <?php else :?> <!--if user has charger edit charger showed-->
-                    <div class="card" id="cards">
-                        <div class="card-body">
-                            <h5>Charger Details</h5>
+                    <form method="post" action="" class="row g-3">
+                        <div class="col-md-5">
+                            <?php if (!isset($_GET['duplicateFound'])) :?>
+                                <label for="adressLine1" class="form-label"> Adress Line 1</label>
+                                <input type="text" name="adressline1" class="form-control">
+                            <?php else : ?>
+                                <input type="text" name="adressline1" class="form-control is-invalid">
+                                <div class="invalid-feedback" >
+                                    Charger with this adress already exsists
+                                </div>
+                            <?php endif ?>
                         </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Adress1:  <?= $adress1 ?></li>
-                            <li class="list-group-item">Adress2: <?= $adress2  ?></li>
-                            <li class="list-group-item">PostCode: <?= $postCode  ?></li>
-                            <li class="list-group-item">Latitude: <?= $lat ?></li>
-                            <li class="list-group-item">Longtitude: <?= $longt ?></li>
-                            <li class="list-group-item">Cost: <?= $cost ?></li>
+                        <div class="col-md-5">
+                            <label for="adressLine2" class="form-label"> Adress Line 2</label>
+                            <input type="text" name="adressline2" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="postCode" class="form-label"> Post Code</label>
+                            <input type="text" name="postcode" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="latitude" class="form-label"> Latitude </label>
+                            <input type="text" name="latitude" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="longtitude" class="form-label"> Longtitude </label>
+                            <input type="text" name="longtitude" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="price" class="form-label"> Cost </label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">£</span>
+                                <input type="text" name="pricein" class="form-control">
+                                <span class="input-group-text">\hour</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit" name="add_charger_button">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            <?php else :?> <!--if user has charger edit charger showed-->
+                <div class="card" id="cards">
+                    <div class="card-body">
+                        <h5>Charger Details</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Adress1:  <?= $adress1 ?></li>
+                        <li class="list-group-item">Adress2: <?= $adress2  ?></li>
+                        <li class="list-group-item">PostCode: <?= $postCode  ?></li>
+                        <li class="list-group-item">Latitude: <?= $lat ?></li>
+                        <li class="list-group-item">Longtitude: <?= $longt ?></li>
+                        <li class="list-group-item">Cost: <?= $cost ?></li>
                         <form action="" method="post">
                             <div class="input-group mb-3">
                                 <?php if (!isset($_GET['invalidInput'])) :?>
@@ -107,8 +108,11 @@
                                 <button class="btn btn-danger" type="submit" name="charger_remove">Remove Charger</button>
                             </div>
                         </form>
-                    </div>
-    <?php endif ?>
+                </div>
+            <?php endif ?>
+        </div>
+    </div>
+
 </div>
 </body>
 <?php require_once ('template/footer.phtml') ?>
