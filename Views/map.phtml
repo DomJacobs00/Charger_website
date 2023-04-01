@@ -1,21 +1,20 @@
 <?php require('template/header.phtml') ?>
-<link rel="stylesheet" href="../OpenLayers-2.13.1/theme/default/style.css" type="text/css">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<body >
-<div id="MapForTest" style="width: 800px; height: 600px"></div>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+</head>
+
+<body>
+    <div id="map" style="height: 400px"></div>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script  type="text/javascript" >
+        var map = L.map('map').setView([51.505, -0.09], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+    </script>
 </body>
-<script src="../OpenLayers-2.13.1/OpenLayers.js"></script>
-<script>
-    var lat = -33.89;
-    var lon = 151.274856;
-    var zoom = 11;
-    var fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from WGS 1984
-    var toProjection = new OpenLayers.Projection("EPSG:900913"); // to spherical mercator projection
-    var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
-    map = new OpenLayers.Map("MapForTest");
-    var mapnik = new OpenLayers.Layer.OSM();
-    map.addLayer(mapnik);
-    map.setCenter(position, zoom);
-</script>
 <?php require('template/footer.phtml') ?>

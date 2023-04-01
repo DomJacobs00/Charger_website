@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div id="Map" style="width:800px;height:600px"></div>
+  <script src="../OpenLayers-2.13.1/OpenLayers.js"></script>
+  <script type="text/javascript">
+    var lat = 53.483591092019914;
+    var lon = -2.2541394126819765;
+    var zoom = 11;
+    var fromProjection = new OpenLayers.Projection("EPSG:4326");
+    var toProjection = new OpenLayers.Projection("EPSG:900913");
+    var position = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+
+    map = new OpenLayers.Map("Map");
+    const mapnik = new OpenLayers.Layer.OSM();
+    map.addLayer(mapnik);
+    map.setCenter(position, zoom);
+  </script>
+</body>
+</html>
