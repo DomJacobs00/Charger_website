@@ -1,10 +1,15 @@
 document.addEventListener('DOMContentLoaded', getLocation);
 let lat;
 let lon;
-function getLocation() {
-    if (navigator.geolocation) {
+let positionCallback;
+function getLocation(callback) {
+    positionCallback = callback;
+    if (navigator.geolocation)
+    {
         navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else {
+    }
+    else
+    {
         document.getElementById('location').innerHTML = "Geolocation is not supported by this browser.";
     }
 }
@@ -12,7 +17,8 @@ function getLocation() {
 function showPosition(position) {
      lat = position.coords.latitude;
      lon = position.coords.longitude;
-    document.getElementById('location').innerHTML = `Latitude: ${lat}<br>Longitude: ${lon}`;
+    //document.getElementById('location').innerHTML = `Latitude: ${lat}<br>Longitude: ${lon}`;
+    updateLocation(lat, lon);
 }
 
 function showError(error) {
@@ -38,4 +44,7 @@ function getLat()
 function getLon()
 {
     return lon;
+}
+function updateLocation(lat, lng) {
+    map.setView([lat, lng], 13);
 }
