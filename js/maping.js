@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', getLocation);
+document.addEventListener('DOMContentLoaded', fetchChargerData);
 let lat;
 let lon;
-let positionCallback;
+let jsonData;
+
 function getLocation(callback) {
     positionCallback = callback;
     if (navigator.geolocation)
@@ -37,14 +39,52 @@ function showError(error) {
             break;
     }
 }
-function getLat()
-{
-    return lat;
-}
-function getLon()
-{
-    return lon;
-}
+
 function updateLocation(lat, lng) {
     map.setView([lat, lng], 13);
 }
+function fetchChargerData()
+{
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'fetchChargerData.php');
+
+    xhr.onreadystatechange = function()
+    {
+        var DONE = 4;
+        var OK = 200;
+        if (xhr.readyState === DONE)
+        {
+            if(xhr.status === OK)
+            {
+                console.log(xhr.responseText);//json data is accessed in JavaScript
+
+
+            }
+            else
+            {
+                console.log("Request failed.", xhr.status);
+            }
+        }
+
+    };
+    xhr.send(null);
+}
+
+//try
+//{
+//    const jsondataObject = JSON.parse(jsonData);
+//    jsondataObject.forEach(element =>
+//    {
+//        console.log(element.id);
+//    });
+//
+//}
+//catch (error)
+//{
+//    console.error('problem: ', error);
+//}
+
+
+
+
+
