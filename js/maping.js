@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', getLocation);
 document.addEventListener('DOMContentLoaded', fetchChargerData);
 let lat;
 let lon;
-let jsonData;
+
 
 function getLocation(callback) {
     positionCallback = callback;
@@ -19,7 +19,7 @@ function getLocation(callback) {
 function showPosition(position) {
      lat = position.coords.latitude;
      lon = position.coords.longitude;
-    //document.getElementById('location').innerHTML = `Latitude: ${lat}<br>Longitude: ${lon}`;
+
     updateLocation(lat, lon);
 }
 
@@ -56,7 +56,15 @@ function fetchChargerData()
         {
             if(xhr.status === OK)
             {
-                console.log(xhr.responseText);//json data is accessed in JavaScript
+                let results = JSON.parse(xhr.responseText);
+                //console.log(obj.coordinates);//json data is accessed in JavaScript
+
+                results.forEach(function(obj){
+
+                    var marker = L.marker([obj.latitude, obj.longtitude]).addTo(map).bindPopup('<p>Adress:' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="contact('+obj.ownerID+'); return false;">Contact Owner</a></p>');
+
+                })
+
 
 
             }
@@ -69,20 +77,12 @@ function fetchChargerData()
     };
     xhr.send(null);
 }
+function contact(ownerID)
+{
+    //alert("contact me action triggered");
+    window.location.href="contact.php?ownerID=" + ownerID;
+}
 
-//try
-//{
-//    const jsondataObject = JSON.parse(jsonData);
-//    jsondataObject.forEach(element =>
-//    {
-//        console.log(element.id);
-//    });
-//
-//}
-//catch (error)
-//{
-//    console.error('problem: ', error);
-//}
 
 
 

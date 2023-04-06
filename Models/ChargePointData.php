@@ -1,6 +1,6 @@
 <?php
 
-class ChargePointData
+class ChargePointData implements JsonSerializable
 {
     protected $_id, $_adress1, $_adress2, $_postcode, $_latitude, $_longtitude, $_cost, $_ownerId;
 
@@ -70,5 +70,10 @@ class ChargePointData
     public function getOwnerId()
     {
         return $this->_ownerId;
+    }
+
+    public function jsonSerialize() : array
+    {
+        return ['id'=>$this->_id, 'address'=>$this->_adress1.', '.$this->_adress2, 'postCode'=>$this->_postcode,'latitude'=>$this->_latitude,'longtitude'=>$this->_longtitude,'cost'=>$this->_cost,'ownerID'=>$this->_ownerId,];// TODO: Implement jsonSerialize() method.
     }
 }

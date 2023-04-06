@@ -161,22 +161,5 @@ class ChargerDataSet
         $statement = $this->_dbHandle->prepare($sqlQuery);
         $statement->execute();
     }
-    public function chargerToJson()
-    {
-        $sqlQuery = 'SELECT * FROM charge_point';
 
-        $statement = $this->_dbHandle->prepare($sqlQuery);
-        $statement->execute();
-
-        $chargerData = [];
-        while ($row = $statement->fetch((PDO::FETCH_ASSOC)))
-        {
-            $chargerData[] = $row;
-        }
-        return json_encode($chargerData);
-
-
-
-
-    }
 }

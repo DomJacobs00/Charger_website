@@ -2,5 +2,5 @@
 header('Content-Type: text/plain');
 require_once("logincontroller.php");
 $chargerDataSet = new ChargerDataSet();
-$jsonData = $chargerDataSet->chargerToJson();
-echo $jsonData;
+$jsonData = $chargerDataSet->fetchAllChargerPoints();
+echo json_encode( $jsonData);
