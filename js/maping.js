@@ -1,9 +1,14 @@
+// waits for the DOM to load and then calls the getLocation and fetchChargerData functions
 document.addEventListener('DOMContentLoaded', getLocation);
 document.addEventListener('DOMContentLoaded', fetchChargerData);
+// variables to store latitude and longtitude of the user
 let lat;
 let lon;
 
-
+/**
+ *
+ * Function that collects user's location using Geolocation API
+ */
 function getLocation(callback) {
     positionCallback = callback;
     if (navigator.geolocation)
@@ -16,13 +21,21 @@ function getLocation(callback) {
     }
 }
 
+/**
+ *
+ * function is called when the user's location is successfully retreived
+ */
 function showPosition(position) {
-     lat = position.coords.latitude;
-     lon = position.coords.longitude;
+     lat = position.coords.latitude; // stores the latitude of the user
+     lon = position.coords.longitude; // stores the longtitude of the user
 
-    updateLocation(lat, lon);
+    updateLocation(lat, lon); // passes the lon and lat to updateLocation function
 }
 
+/**
+ *
+ * Error handling function
+ */
 function showError(error) {
     switch (error.code) {
         case error.PERMISSION_DENIED:
@@ -40,9 +53,20 @@ function showError(error) {
     }
 }
 
+/**
+ * Changes the maps view coordinates to the aquired users coordinates
+ * @param lat
+ * @param lng
+ */
 function updateLocation(lat, lng) {
     map.setView([lat, lng], 13);
 }
+
+/**
+ * aquires the data required in JSON format to be used in the map markers or any other way.
+ * Using AJAX techniques the charger data is fetched from the database and converted in JSON format.
+ * Additionally, all the data is displayed using markers
+ */
 function fetchChargerData()
 {
     const xhr = new XMLHttpRequest();
@@ -77,13 +101,81 @@ function fetchChargerData()
     };
     xhr.send(null);
 }
+
+/**
+ * Function that only activates when user clicks 'Contact Owner' button which passes the ownerID and
+ * redirects user to a contact page.
+ * @param ownerID
+ */
 function contact(ownerID)
 {
-    //alert("contact me action triggered");
+
     window.location.href="contact.php?ownerID=" + ownerID;
 }
 
+/**
+ * Addition of a current location button which utilizes DomUtil to display an image that
+ * when clicked uses the latitude and longtitude collected to update the view location.
+ */
+var buttonLocation = L.control({
+    position: 'bottomleft'
+});
+buttonLocation.onAdd = function (map) {
+    // Create a new button element
+    var button = L.DomUtil.create('img', 'my-image-class');
 
+    // Set the text of the button
+    button.src = '../images/icons8-my-location-32.png';
+
+    // Add a click event listener to the button
+    L.DomEvent.addListener(button, 'click', function () {
+        // Handle the button click event
+        updateLocationWithCheck();
+    });
+
+    // Return the button element
+    return button;
+};
+buttonLocation.addTo(map);
+
+/**
+ * Checks that the latitude and longtitude is obtained and updates the location
+ */
+function updateLocationWithCheck()
+{
+    if(typeof lat !== 'undefined' && lon !== 'undefined')
+    {
+        updateLocation(lat, lon);
+    }
+    else
+    {
+        alert('latitude and longtitude is not accessible now. Refresh your page or allow the website to use location.');
+    }
+}
+
+/**
+ * Input field that is used for searching chargers.
+ */
+var searchField = L.control();
+searchField.onAdd = function(map){
+    var container = L.DomUtil.create('div', 'my-input-container');
+    var input = L.DomUtil.create('input', 'my-input-class');
+    input.type = 'text';
+    input.placeholder = 'Search';
+    L.DomEvent.addListener(input, 'change', function(){
+        var keyword = input.value;
+        locator(keyword);
+
+    });
+    container.appendChild(input);
+    return container;
+}
+searchField.addTo(map);
+
+function locator(keywords)
+{
+    alert(keywords);
+}
 
 
 

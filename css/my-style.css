@@ -70,5 +70,13 @@ img {
     height: 50vh;
     width: 100%;
 }
+.my-input-class
+{
+    text-align: center;
+    top: 10px;
+
+    width: 30vh;
+    height: 3vh;
+}
 
 
