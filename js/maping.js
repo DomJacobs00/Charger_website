@@ -158,53 +158,62 @@ function updateLocationWithCheck()
  */
 var searchField = L.control();
 searchField.onAdd = function(map){
-    var container = L.DomUtil.create('div', 'my-input-container');
-    var input = L.DomUtil.create('input', 'my-input-class');
+    var container = L.DomUtil.create('div', 'input-group mb-3');
+    var input = L.DomUtil.create('input', 'form-control');
     input.type = 'text';
     input.placeholder = 'Search';
+    // addition of suggestion box
+    var suggestionBox = L.DomUtil.create('div', 'suggestion-box');
+    container.appendChild(suggestionBox);
     L.DomEvent.addListener(input, 'keyup', function(){
-        var keyword = input.value;
-        locator(keyword);
+        var keywords = input.value;
+        //locator(keywords);
+        if(keywords == 0)
+        {
+            suggestionBox.style.display = 'none';
+        }
+        else
+        {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function()
+            {
+                if(this.readyState ==4 && this.status == 200)
+                {
+
+                    var data = JSON.parse(this.responseText);
+                    suggestionBox.innerHTML = "";
+                    for(var i=0; i < data.length; i++)
+                    {
+                        var suggestion = document.createElement('div');
+                        suggestion.classList.add('suggestion');
+                        suggestion.innerHTML = data[i].address +", "+ data[i].postCode;
+                        suggestion.setAttribute('lat', data[i].latitude);
+                        suggestion.setAttribute('lon', data[i].longtitude);
+                        suggestionBox.appendChild(suggestion);
+                    }
+                }
+                suggestionBox.style.display = 'block';
+            };
+            xmlhttp.open("GET", "../lookup.php?keyword="+keywords, true);
+            xmlhttp.send();
+        }
 
     });
+    suggestionBox.addEventListener('click', function(e)
+    {
+        // getting the coordinates of the charging point
+        var lattemp = e.target.getAttribute('lat');
+        var lontemp = e.target.getAttribute('lon');
+        // change the location
+        updateLocation(lattemp, lontemp);
+        suggestionBox.style.display = 'none';
+    })
     container.appendChild(input);
     return container;
 }
 searchField.addTo(map);
 
-function locator(keywords) // searching by postcode
-{
-    if(keywords == 0)
-    {
-        document.getElementById("hintero").innerHTML = "";
-    }
-    else
-    {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function()
-        {
-            if(this.readyState ==4 && this.status == 200)
-            {
 
-                var data = JSON.parse(this.responseText);
-
-                var uic = document.getElementById("hintero");
-                uic.innerHTML = "";
-                for(var i=0; i < data.length; i++)
-                {
-
-                    var resultOption = document.createElement("option");
-                    resultOption.value = data[i].id;
-                    resultOption.text =data[i].address +", "+ data[i].postCode;
-                    uic.add(resultOption);
-                }
-            }
-
-        };
-        xmlhttp.open("GET", "../lookup.php?keyword="+keywords, true);
-        xmlhttp.send();
-    }
-}
 
 
 
