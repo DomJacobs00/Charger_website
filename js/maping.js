@@ -162,7 +162,7 @@ searchField.onAdd = function(map){
     var input = L.DomUtil.create('input', 'my-input-class');
     input.type = 'text';
     input.placeholder = 'Search';
-    L.DomEvent.addListener(input, 'change', function(){
+    L.DomEvent.addListener(input, 'keyup', function(){
         var keyword = input.value;
         locator(keyword);
 
@@ -172,9 +172,38 @@ searchField.onAdd = function(map){
 }
 searchField.addTo(map);
 
-function locator(keywords)
+function locator(keywords) // searching by postcode
 {
-    alert(keywords);
+    if(keywords == 0)
+    {
+        document.getElementById("hintero").innerHTML = "";
+    }
+    else
+    {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function()
+        {
+            if(this.readyState ==4 && this.status == 200)
+            {
+
+                var data = JSON.parse(this.responseText);
+
+                var uic = document.getElementById("hintero");
+                uic.innerHTML = "";
+                for(var i=0; i < data.length; i++)
+                {
+
+                    var resultOption = document.createElement("option");
+                    resultOption.value = data[i].id;
+                    resultOption.text =data[i].address +", "+ data[i].postCode;
+                    uic.add(resultOption);
+                }
+            }
+
+        };
+        xmlhttp.open("GET", "../lookup.php?keyword="+keywords, true);
+        xmlhttp.send();
+    }
 }
 
 

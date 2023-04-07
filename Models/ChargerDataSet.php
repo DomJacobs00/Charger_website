@@ -130,7 +130,7 @@ class ChargerDataSet
         }
         elseif($searchBy ==2)
         {
-            $sqlQuery = "SELECT * FROM charge_point WHERE UPPER(postcode) LIKE UPPER('$keyword%') ORDER BY postcode";
+            $sqlQuery = "SELECT * FROM charge_point WHERE UPPER(postcode) LIKE UPPER('%$keyword%') ORDER BY postcode";
 
 
         }
@@ -161,5 +161,17 @@ class ChargerDataSet
         $statement = $this->_dbHandle->prepare($sqlQuery);
         $statement->execute();
     }
+    public function chargerLookup($keyword)
+    {
+        $sqlQuery = "SELECT * FROM charge_point WHERE UPPER(adress1) LIKE UPPER(CONCAT('%', ?, '%')) OR UPPER(adress2) LIKE UPPER(CONCAT('%', ?, '%')) OR UPPER(postcode) LIKE UPPER(CONCAT('%', ?, '%')) ORDER BY adress1";
+        $statement = $this->_dbHandle->prepare($sqlQuery);
+        $statement->execute(array($keyword, $keyword, $keyword));
 
+        $chargeDataSet = [];
+        while ($row = $statement->fetch())
+        {
+            $chargeDataSet[] = new ChargePointData($row);
+        }
+        return $chargeDataSet;
+    }
 }
