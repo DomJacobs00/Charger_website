@@ -4,7 +4,17 @@ document.addEventListener('DOMContentLoaded', fetchChargerData);
 // variables to store latitude and longtitude of the user
 let lat;
 let lon;
-
+var icon = L.Icon.extend({
+   options: {
+       shadowUrl: '../leaflet/images/marker-shadow.png',
+       iconSize: [45,80],
+       shadowSize: [50,64],
+       iconAnchor: [22, 94],
+       shadowAnchor: [4, 62],
+       popupAnchor: [-3, -76]
+   }
+});
+var customIcon = new icon({iconUrl:'../images/marker.png'});
 /**
  *
  * Function that collects user's location using Geolocation API
@@ -85,7 +95,7 @@ function fetchChargerData()
 
                 results.forEach(function(obj){
 
-                    var marker = L.marker([obj.latitude, obj.longtitude]).addTo(map).bindPopup('<p>Adress:' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="contact('+obj.ownerID+'); return false;">Contact Owner</a></p>');
+                    var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon}).addTo(map).bindPopup('<p>Adress:' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="contact('+obj.ownerID+'); return false;">Contact Owner</a></p>');
 
                 })
 

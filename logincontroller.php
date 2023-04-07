@@ -30,7 +30,7 @@ if(isset($_POST["loginbutton"]))
         $_SESSION["profilePicture"] = $view->login_details[0]->getProfilePicture();
         $login_status = true; // session has kept active
         //header("location: myAccount.php"); // relocation
-        echo '<script> window.location.href="myAccount.php"</script>';
+        echo '<script> window.location.href="map.php"</script>';
     }
     else
     {

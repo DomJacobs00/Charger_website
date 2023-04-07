@@ -1,6 +1,6 @@
 <?php
 $view = new stdClass();
-$view->pageTitle = 'Map';
+$view->pageTitle = 'Find A Charger';
 $view->login_status = false;
 require_once("logincontroller.php");
 $chargerDataSet = new ChargerDataSet();
