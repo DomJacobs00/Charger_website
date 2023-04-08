@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', fetchChargerData);
 // variables to store latitude and longtitude of the user
 let lat;
 let lon;
+/**
+ * Addition of a custom icon
+ */
 var icon = L.Icon.extend({
    options: {
        shadowUrl: '../leaflet/images/marker-shadow.png',
