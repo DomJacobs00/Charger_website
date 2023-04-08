@@ -3,6 +3,13 @@ session_start();
 
 require_once ('Models/UsersDataSet.php');
 require_once ('Models/ChargerDataSet.php');
+
+/**
+ * Using a limiter to limit unsuccessful login attempts
+ */
+$max = 3; // after 3 unsuccesful attempts timeout is activated
+$timeout = 120; // time in seconds that user will not be able to login
+
 /**
  * with the aquired username (email) and password
  * password is being hashed and used together with username to locate the user
@@ -14,6 +21,24 @@ require_once ('Models/ChargerDataSet.php');
  *  Profile picture
  *  and redirected to myAccount.php for further use.
  */
+if(!isset($_SESSION['login_attempts']))
+{
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['first_attempt_time'] = time();
+}
+if($_SESSION['login_attempts'] >= $max)
+{
+    $time_passed = time() - $_SESSION['first_attempt_time'];
+    if($time_passed < $timeout) // message while timeout is in action
+    {
+        die('Too many attempts. Please wait and try again later.');
+    }
+    else // when the timeout is finished
+    {
+        $_SESSION['login_attempts'] = 0;
+        $_SESSION['first_attempt_time'] = time();
+    }
+}
 if(isset($_POST["loginbutton"]))
 {
     $view = new stdClass();
@@ -37,6 +62,7 @@ if(isset($_POST["loginbutton"]))
         $login_status = false; // session stoped
         //header("location: index.php?wrongDetails");//error handling
         echo '<script> window.location.href="index.php?wrongDetails"</script>';
+        $_SESSION['login_attempts']++;
         exit();
     }
 }
