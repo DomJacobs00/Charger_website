@@ -53,6 +53,8 @@ if(isset($_POST["loginbutton"]))
         $_SESSION["login"] = $username;
         $_SESSION["realName"] = $view->login_details[0]->getRealName();
         $_SESSION["profilePicture"] = $view->login_details[0]->getProfilePicture();
+        $_SESSION["latitude"] = 0; // storing the latitude and longtitude
+        $_SESSION["longtitude"]= 0; // so it is only asked once.
         $login_status = true; // session has kept active
         //header("location: myAccount.php"); // relocation
         echo '<script> window.location.href="map.php"</script>';
