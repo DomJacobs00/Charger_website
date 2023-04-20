@@ -134,7 +134,11 @@ function placeChargersOnMap()
         let jsonData = results;
         jsonData.forEach(function(obj){
 
-            var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon}).addTo(map).bindPopup('<p>Address: ' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="contact(\''+obj.ownerID+'\')">Contact Owner</a></p>');
+            var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon})
+                .addTo(map)
+                .bindPopup('<p>Address: ' + obj.address + '<br />PostCode: ' + obj.postCode
+                    + '<br />Price: £' + obj.cost
+                    + 'kw/h<br /><a href="#" onclick="contact(\''+obj.ownerID+'\')">Contact Owner</a></p>');
 
         });
     }).catch(error => {
