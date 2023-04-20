@@ -1,10 +1,11 @@
-// waits for the DOM to load and then calls the getLocation and fetchChargerData functions
+// waits for the DOM to load and then calls the getLocation and placeChargersOnMap functions
 document.addEventListener('DOMContentLoaded', getLocation);
-//document.addEventListener('DOMContentLoaded', fetchChargerData);
 document.addEventListener('DOMContentLoaded', placeChargersOnMap);
 
 
-// variables to store latitude and longtitude of the user
+/**
+ * variables to store latitude and longtitude of the user
+ */
 let lat;
 let lon;
 /**
@@ -21,8 +22,8 @@ var icon = L.Icon.extend({
    }
 });
 var customIcon = new icon({iconUrl:'../images/marker.png'});
+
 /**
- *
  * Function that collects user's location using Geolocation API
  */
 function getLocation(callback) {
@@ -38,8 +39,7 @@ function getLocation(callback) {
 }
 
 /**
- *
- * function is called when the user's location is successfully retreived
+ * Function is called when the user's location is successfully retrieved.
  */
 function showPosition(position) {
      lat = position.coords.latitude; // stores the latitude of the user
@@ -49,7 +49,6 @@ function showPosition(position) {
 }
 
 /**
- *
  * Error handling function
  */
 function showError(error) {
@@ -135,7 +134,7 @@ function placeChargersOnMap()
         let jsonData = results;
         jsonData.forEach(function(obj){
 
-            var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon}).addTo(map).bindPopup('<p>Adress:' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="window.location.href="contact.php?ownerID=" + ownerID;">Contact Owner</a></p>');
+            var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon}).addTo(map).bindPopup('<p>Address: ' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="window.location.href=\'contact.php?ownerID=' + obj.ownerID + '\'">Contact Owner</a></p>');
 
         });
     }).catch(error => {

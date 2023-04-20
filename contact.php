@@ -19,12 +19,13 @@ if(isset($_POST['send_message']))
     $message = $_POST['message'];
     $dateNtime = $_POST['chargeDate'];
     if(empty($message)) {
-        header("location: contact.php?ownerID=$owner_id&noInput");
+
+        echo '<script> window.location.href="registration.php?contact.php?ownerID='.$owner_id.'&noInput"</script>';
         exit();
     }
     else
     {
-        header("location: contact.php?ownerID=$owner_id&sent");
+        echo '<script> window.location.href="registration.php?contact.php?ownerID='.$owner_id.'&sent"</script>';
     }
 }
 require_once ('Views/contact.phtml');

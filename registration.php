@@ -12,19 +12,20 @@ if (isset($_POST["register_button"]))
     // check if all details are entered
     if(empty($username))
     {
-        header("location:registration.php?noUsername ");
+
+        echo '<script> window.location.href="registration.php?noUsername"</script>';
     }
     elseif(empty($real_name))
     {
-        header("location:registration.php?noRealName ");
+        echo '<script> window.location.href="registration.php?noRealName"</script>';
     }
     elseif(empty($password))
     {
-        header("location:registration.php?noPassword ");
+        echo '<script> window.location.href="registration.php?noPassword"</script>';
     }
     elseif(empty($username) and empty($real_name) and empty($password))
     {
-        header("location:registration.php?noInput ");
+        echo '<script> window.location.href="registration.php?noInput"</script>';
     }
     else
     {
@@ -44,7 +45,7 @@ if (isset($_POST["register_button"]))
             $usersDataSet = new UsersDataSet();
             $new_password = hash('sha1', $password);
             $view->usersDataSet = $usersDataSet->addUser( $username, $real_name, $new_password);
-            header("location: index.php"); // replace this to window.location = "index.php"; with JavaScript
+            echo '<script> window.location.href="index.php"</script>';
         }
     }
 }

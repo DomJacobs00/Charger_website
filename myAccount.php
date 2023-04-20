@@ -34,28 +34,28 @@ if (isset($_POST["update_detail"]))
     $input = $_POST['update_input'];
     if(empty($input))
     {
-        header("location: myAccount.php?invalidInput");
+        echo '<script> window.location.href="myAccount.php?invalidInput"</script>';
         exit();
     }
     if($option == 1)
     {
         $updateDetails = new ChargerDataSet();
         $updateDetails->updateChargerAdress1($chargerId, $input);
-        header("location: myAccount.php");
+        echo '<script> window.location.href="myAccount.php"</script>';
         exit();
     }
     elseif ($option == 2)
     {
         $updateDetails = new ChargerDataSet();
         $updateDetails->updateChargerAdress2($chargerId, $input);
-        header("location: myAccount.php");
+        echo '<script> window.location.href="myAccount.php"</script>';
         exit();
     }
     elseif ($option == 3)
     {
         $updateDetails = new ChargerDataSet();
         $updateDetails->updateChargerPostCode($chargerId, $input);
-        header("location: myAccount.php");
+        echo '<script> window.location.href="myAccount.php"</script>';
         exit();
     }
     elseif($option == 4)
@@ -64,12 +64,12 @@ if (isset($_POST["update_detail"]))
         {
             $updateDetails = new ChargerDataSet();
             $updateDetails->updateChargerLatitude($chargerId, $input);
-            header("location: myAccount.php");
+            echo '<script> window.location.href="myAccount.php"</script>';
             exit();
         }
         else
         {
-            header("location: myAccount.php?invalidInput");
+            echo '<script> window.location.href="myAccount.php?invalidInput"</script>';
         }
     }
     elseif($option == 5)
@@ -78,12 +78,12 @@ if (isset($_POST["update_detail"]))
         {
             $updateDetails = new ChargerDataSet();
             $updateDetails->updateChargerLongtitude($chargerId, $input);
-            header("location: myAccount.php");
+            echo '<script> window.location.href="myAccount.php"</script>';
             exit();
         }
         else
         {
-            header("location: myAccount.php?invalidInput");
+            echo '<script> window.location.href="myAccount.php?invalidInput"</script>';
         }
     }
     elseif($option == 6)
@@ -92,12 +92,12 @@ if (isset($_POST["update_detail"]))
         {
             $updateDetails = new ChargerDataSet();
             $updateDetails->updateChargerCost($chargerId, $input);
-            header("location: myAccount.php");
+            echo '<script> window.location.href="myAccount.php"</script>';
             exit();
         }
         else
         {
-            header("location: myAccount.php?invalidInput");
+            echo '<script> window.location.href="myAccount.php?invalidInput"</script>';
         }
     }
 
@@ -133,12 +133,12 @@ if (isset($_POST["add_charger_button"]))
         $latitude== null;
         $longtitude == null;
         $cost == null;
-        header("location: myAccount.php?duplicateFound");
+        echo '<script> window.location.href="myAccount.php?duplicateFound"</script>';
         exit();
     }
     if($adressLine1 == null or $adressLine2 == null or $postCode== null or $latitude== null or $longtitude == null or $cost == null)
     {
-        header("location: myAccount.php?noInput");
+        echo '<script> window.location.href="myAccount.php?noInput""</script>';
         exit();
     }
     //add the charger to the database if no duplicates found
@@ -147,7 +147,7 @@ if (isset($_POST["add_charger_button"]))
         $foreign_key = $_SESSION["id"];
         $chargePointAddition = new ChargerDataSet();
         $view->chargePointAddition = $chargePointAddition->addChargePoint( $adressLine1, $adressLine2, $postCode, $latitude , $longtitude, $cost, $foreign_key);
-        header("location: myAccount.php");
+        echo '<script> window.location.href="myAccount.php"</script>';
     }
 }
 require_once ('Views/myAccount.phtml');
