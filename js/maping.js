@@ -1,6 +1,9 @@
 // waits for the DOM to load and then calls the getLocation and fetchChargerData functions
 document.addEventListener('DOMContentLoaded', getLocation);
-document.addEventListener('DOMContentLoaded', fetchChargerData);
+//document.addEventListener('DOMContentLoaded', fetchChargerData);
+document.addEventListener('DOMContentLoaded', placeChargersOnMap);
+
+
 // variables to store latitude and longtitude of the user
 let lat;
 let lon;
@@ -84,39 +87,65 @@ function fetchChargerData()
 {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'fetchChargerData.php');
-
-    xhr.onreadystatechange = function()
+    return new Promise((resolve, reject) =>
     {
-        var DONE = 4;
-        var OK = 200;
-        if (xhr.readyState === DONE)
+        xhr.onreadystatechange = function()
         {
-            if(xhr.status === OK)
+            const DONE = 4;
+            const OK = 200;
+            if(xhr.readyState === DONE)
             {
-                let results = JSON.parse(xhr.responseText);
-                //console.log(obj.coordinates);//json data is accessed in JavaScript
-
-                results.forEach(function(obj){
-
-                    var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon}).addTo(map).bindPopup('<p>Adress:' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="contact('+obj.ownerID+'); return false;">Contact Owner</a></p>');
-
-                })
-
-
-
+                if(xhr.status=== OK)
+                {
+                    let results = JSON.parse(xhr.responseText);
+                    resolve(results);
+                }
+                else
+                {
+                    reject(new Error('Request Failed'));
+                }
             }
-            else
+        };
+        xhr.send(null);
+    });
+}
+function chargerLookup(keywords)
+{
+    const DONE = 4;
+    const OK = 200;
+    return new Promise((resolve, reject) =>{
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if(this.status == OK)
             {
-                console.log("Request failed.", xhr.status);
+                if(this.readyState == DONE)
+                {
+                    resolve(JSON.parse(this.responseText));
+                }
             }
-        }
+        };
+        xmlhttp.open('GET', '../lookup.php?keyword='+keywords, true);
+        xmlhttp.send();
+    });
+}
+function placeChargersOnMap()
+{
 
-    };
-    xhr.send(null);
+    fetchChargerData().then(results => {
+        let jsonData = results;
+        jsonData.forEach(function(obj){
+
+            var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon}).addTo(map).bindPopup('<p>Adress:' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="window.location.href="contact.php?ownerID=" + ownerID;">Contact Owner</a></p>');
+
+        });
+    }).catch(error => {
+
+    });
+
 }
 
 /**
- * Function that only activates when user clicks 'Contact Owner' button which passes the ownerID and
+ * Function that only activates when user selects charger which passes the ownerID and
  * redirects user to a contact page.
  * @param ownerID
  */
@@ -178,39 +207,36 @@ searchField.onAdd = function(map){
     // addition of suggestion box
     var suggestionBox = L.DomUtil.create('div', 'suggestion-box');
     container.appendChild(suggestionBox);
-    L.DomEvent.addListener(input, 'keyup', function(){
+    L.DomEvent.addListener(input, "keyup", function (){
         var keywords = input.value;
-        //locator(keywords);
         if(keywords == 0)
         {
-            suggestionBox.style.display = 'none';
+            suggestionBox.style.display = "none";
         }
         else
         {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function()
-            {
-                if(this.readyState ==4 && this.status == 200)
+            chargerLookup(keywords).then(data=> {
+                suggestionBox.innerHTML = "";
+                for (var i = 0; i < data.length; i++)
                 {
-
-                    var data = JSON.parse(this.responseText);
-                    suggestionBox.innerHTML = "";
-                    for(var i=0; i < data.length; i++)
-                    {
-                        var suggestion = document.createElement('div');
-                        suggestion.classList.add('suggestion');
-                        suggestion.innerHTML = data[i].address +", "+ data[i].postCode;
-                        suggestion.setAttribute('lat', data[i].latitude);
-                        suggestion.setAttribute('lon', data[i].longtitude);
-                        suggestionBox.appendChild(suggestion);
-                    }
+                    const pointlat = data[i].latitude;
+                    const pointlon = data[i].longtitude;
+                    const userlat = lat;
+                    const userlon = lon;
+                    const distance = distanceCalculator(userlat, userlon, pointlat, pointlon);
+                    var suggestion = document.createElement("div");
+                    suggestion.classList.add("suggestion");
+                    suggestion.innerHTML = data[i].address +", "+ data[i].postCode+', '+distance+" miles";
+                    suggestion.setAttribute('lat', data[i].latitude);
+                    suggestion.setAttribute('lon', data[i].longtitude);
+                    suggestionBox.appendChild(suggestion);
                 }
-                suggestionBox.style.display = 'block';
-            };
-            xmlhttp.open("GET", "../lookup.php?keyword="+keywords, true);
-            xmlhttp.send();
+                suggestionBox.style.display = "block";
+            })
+                .catch(error => {
+                    console.error("issue with getting data.");
+                });
         }
-
     });
     suggestionBox.addEventListener('click', function(e)
     {
@@ -225,6 +251,252 @@ searchField.onAdd = function(map){
     return container;
 }
 searchField.addTo(map);
+/**
+ * Addition of a popup button for window to the map
+ */
+var popupButton = L.control({
+    position: 'topleft'
+});
+popupButton.onAdd = function (map)
+{
+    var buttonForPopup = L.DomUtil.create('button', 'popupbutton btn btn-light');
+    buttonForPopup.textContent = '>';
+    var popup = document.getElementById("popup");
+    var mapElement = document.getElementsByClassName("map-container");
+    L.DomEvent.addListener(buttonForPopup, 'click', function (){
+        try{
+            if(popup.style.display === "none")
+            {
+                popup.style.display = "block";
+                mapElement.style.flex = "3";
+
+
+            }
+            else
+            {
+                popup.style.display = "none";
+                mapElement.style.flex = "auto";
+
+
+            }
+        }
+        catch (error)
+        {
+        }
+
+    });
+    /**
+     * For a reason unkown to me and the internet this does not work together with
+     * the popup window, hence an aditional method to handle how the button looks is
+     * created
+     */
+    L.DomEvent.on(buttonForPopup, 'click', function (){
+        if(popup.style.display !== "none")
+        {
+            buttonForPopup.textContent = '<';
+        }
+        else
+        {
+           buttonForPopup.textContent = '>';
+        }
+
+    });
+    L.DomEvent.disableClickPropagation(buttonForPopup);
+    map.getContainer().appendChild(buttonForPopup);
+    return buttonForPopup;
+
+}
+map.addControl(popupButton);
+/**
+ * Functions that calculates the distances between the charge point and the user's location
+ * first function is used to change degrees to radian
+ * second function calculates the distance using Haversine formula
+ * This is not entirelly acurate, as it does not interpret that the Earths shape is not a perfect sphere.
+ * Additionally, this does not count in the roads, and the distances it would take by driving.
+ */
+function degreeToRadian(degree)
+{
+    return degree * (Math.PI / 180);
+}
+function distanceCalculator(lat1, lon1, lat2, lon2)
+{
+
+    const R = 3958.8; // Earth's radius in miles (approx)
+    const latitude1 = degreeToRadian(lat1);
+    const longtitude1 = degreeToRadian(lon1);
+    const latitude2 = degreeToRadian(lat2);
+    const longtitude2 = degreeToRadian(lon2);
+
+    const dLat = latitude2 - latitude1;
+    const dLon = longtitude2 - longtitude1;
+
+    const a = Math.pow(Math.sin(dLat / 2), 2) +
+        Math.cos(latitude1) * Math.cos(latitude2) *
+        Math.pow(Math.sin(dLon / 2), 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance.toFixed(2);
+}
+
+/**
+ * Popup window's searchBar handling
+ */
+/*
+Handling the dropDown menu
+ */
+function handleDropDownMenu()
+{
+    const dropDownMenuButton = document.getElementById('dropdownMenuButton');
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    const searchOption = document.getElementById('searchOption');
+    dropDownMenuButton.addEventListener('click', () => {
+        searchOption.classList.toggle('show');
+    });
+
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', event => {
+            event.preventDefault();
+            dropDownMenuButton.textContent = event.target.textContent;
+            searchOption.classList.remove('show');
+        });
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.matches('.dropdown-toggle')) {
+            searchOption.classList.remove('show');
+        }
+    });
+}
+handleDropDownMenu();
+
+/**
+ *
+ * @param query
+ * @param option
+ * @returns {Promise<void>}
+ * function that performs the search if query has input
+ */
+async function performSearch(query, option)
+{
+    if(!query)
+    {
+        renderResults([]); //clear the results if the query is empty
+        return;
+    }
+    try{
+        const data = await fetchChargerData();
+
+        const filteredData = filterChargerData(data, query, option);
+        renderResults(filteredData);
+    }
+    catch (error)
+    {
+        console.error("Error fetching charger data.")
+    }
+}
+
+/**
+ * Function that handles the search input and option selection
+ */
+function inputAndOptionHandler()
+{
+    const searchField = document.getElementById('searchField');
+    const searchOption = document.getElementById('searchOption');
+    const searchOptionButton = document.getElementById('dropdownMenuButton');
+
+    let currentOption = searchOption.children[0].dataset.value;
+    searchField.addEventListener('input', event =>
+    {
+       const query = event.target.value;
+       performSearch(query, currentOption) //error handling
+           .then(() =>
+           {
+               console.log('Search successfull');
+           })
+           .catch(error =>
+           {
+                console.error('Error during search');
+           });
+    });
+    searchOption.addEventListener('click', event =>
+    {
+        if(event.target.classList.contains('dropdown-item'))
+        {
+            currentOption = event.target.dataset.value;
+            searchOptionButton.textContent = event.target.textContent;
+            const query = searchField.value;
+            performSearch(query, currentOption)
+                .then(() =>
+                {
+                    console.log('Search successfull');
+                })
+                .catch(error =>
+                {
+                    console.error('Error during search');
+                });
+        }
+    });
+}
+inputAndOptionHandler();
+
+/**
+ *
+ * @param data
+ * @param query
+ * @param option
+ * @returns array of data
+ * Function that filters the data with option and the query inputted.
+ * Additionally, sorts the data, depending on what option was selected.
+ * Finally, it returns an array to be further worked on by other functions.
+ */
+function filterChargerData(data, query, option)
+{
+    query = query.toLowerCase();
+    const filteredData =  data.filter(item =>
+    item[option] && item[option].toString().toLowerCase().includes(query)
+    );
+    // Sorting the filtered data
+    filteredData.sort((a,b) =>
+    {
+        const aValue = a[option];
+        const bValue = b[option];
+
+        //for numerical values
+        if(typeof aValue === 'number' && typeof bValue === 'number')
+        {
+            return aValue-bValue;
+        }
+        // for string values
+        return aValue.toString().localeCompare(bValue.toString());
+    });
+    return filteredData;
+}
+
+/**
+ *
+ * @param data
+ * renders the data into temporary div containers, with information that is only needed.
+ */
+function renderResults(data)
+{
+    const resultsContainer = document.getElementById('searchResultsContainer');
+    resultsContainer.innerHTML = "";
+    data.forEach(item =>
+    {
+        const distance= distanceCalculator(lat, lon, item.latitude, item.longtitude)
+        const resultElement = document.createElement('div');
+        resultElement.classList.add('result-item');
+        resultElement.innerHTML = item.address +", "+ item.postCode +', £'+ item.cost+', '+distance+' miles';
+        resultElement.addEventListener('click', function()
+        {
+            contact(item.ownerID);
+        });
+        resultsContainer.appendChild(resultElement);
+    });
+}
+
+
+
 
 
 

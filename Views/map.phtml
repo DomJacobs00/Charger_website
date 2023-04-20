@@ -8,7 +8,29 @@
 
 <body>
     <div class="container-fluid">
-        <div id="map" ></div>
+            <div id="popup">
+
+                    <div class="card-body">
+                        <h2>List Search</h2>
+                    </div>
+
+                <div class="container" id="search">
+                    <div class="input-group">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton">Options</button>
+                            <div class="dropdown-menu" id="searchOption">
+                                <a href="#" class="dropdown-item" id="option1" data-value = "address">Address</a>
+                                <a href="#" class="dropdown-item" id="option2" data-value = "postCode">PostCode</a>
+                                <a href="#" class="dropdown-item" id="option3" data-value = "cost">Price</a>
+                            </div>
+                        </div>
+                        <input type="text" id="searchField"class="form-control" placeholder="Search">
+                    </div>
+                </div>
+                <div id="searchResultsContainer" class="scrollable-container"></div>
+            </div>
+            <div id="map" class="map-container"></div>
+
         <script  type="text/javascript" >
             var map = L.map('map').setView([51.505, -0.09], 13);
 
@@ -18,9 +40,5 @@
             }).addTo(map);
         </script>
     </div>
-
-
-
-
 </body>
 <?php require('template/footer.phtml') ?>
