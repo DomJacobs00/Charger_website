@@ -1,8 +1,8 @@
-// waits for the DOM to load and then calls the getLocation and placeChargersOnMap functions
+/**
+ * waits for the DOM to load and then calls the getLocation and placeChargersOnMap functions
+ */
 document.addEventListener('DOMContentLoaded', getLocation);
 document.addEventListener('DOMContentLoaded', placeChargersOnMap);
-
-
 /**
  * variables to store latitude and longtitude of the user
  */
@@ -134,7 +134,7 @@ function placeChargersOnMap()
         let jsonData = results;
         jsonData.forEach(function(obj){
 
-            var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon}).addTo(map).bindPopup('<p>Address: ' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="window.location.href=\'contact.php?ownerID=' + obj.ownerID + '\'">Contact Owner</a></p>');
+            var marker = L.marker([obj.latitude, obj.longtitude], {icon:customIcon}).addTo(map).bindPopup('<p>Address: ' + obj.address + '<br />PostCode: ' + obj.postCode + '<br />Price: £' + obj.cost + 'kw/h<br /><a href="#" onclick="contact(\''+obj.ownerID+'\')">Contact Owner</a></p>');
 
         });
     }).catch(error => {
@@ -142,17 +142,27 @@ function placeChargersOnMap()
     });
 
 }
-
-/**
- * Function that only activates when user selects charger which passes the ownerID and
- * redirects user to a contact page.
- * @param ownerID
- */
-function contact(ownerID)
+function fetchOwnerDetails(ownerID)
 {
-
-    window.location.href="contact.php?ownerID=" + ownerID;
+    const DONE = 4;
+    const OK = 200;
+    return new Promise((resolve, reject) =>{
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if(this.status == OK)
+            {
+                if(this.readyState == DONE)
+                {
+                    resolve(JSON.parse(this.responseText));
+                }
+            }
+        };
+        xmlhttp.open('GET', '../fetchUserData.php?keyword='+ownerID, true);
+        xmlhttp.send();
+    });
 }
+
+
 
 /**
  * Addition of a current location button which utilizes DomUtil to display an image that
@@ -251,6 +261,95 @@ searchField.onAdd = function(map){
 }
 searchField.addTo(map);
 /**
+ * Function that only activates when user selects charger which passes the ownerID and
+ * redirects user to a contact popup tab.
+ * @param ownerID
+ */
+function contact(ownerID)
+{
+    // firstly getting the popup information is useful
+    fetchOwnerDetails(ownerID).then(data=>
+    {
+        var ownerProfilePicture = document.getElementById('contact-profile-picture');
+        ownerProfilePicture.src = data[0].profilePicture;
+        var ownerName = document.getElementById('ownerName');
+        ownerName.textContent = data[0].name;
+        var ownerEmail = document.getElementById('ownerEmail');
+        ownerEmail.textContent = data[0].username;
+    })
+    //handling of popups in both situations: when the popup for list search is open and when not
+
+    var contactPopup = document.getElementById('contact-message');
+    var popup = document.getElementById('popup');
+    var mapElement = document.getElementsByClassName("map-container");
+    try
+    {
+        if(contactPopup.style.display === "none")
+        {
+            contactPopup.style.display = "block";
+            mapElement.style.flex = "3";
+        }
+        else if(contactPopup.style.display === "none" && popup.style.display ==="block")
+        {
+            contactPopup.style.display = "block";
+            mapElement.style.flex = "2";
+        }
+        else
+        {
+            contactPopup.style.display = "none";
+            mapElement.style.flex = "auto";
+        }
+    }
+    catch (e) {
+
+    }
+}
+
+/**
+ * handling closing the Contact Owner tab
+ */
+var contactPopup = document.getElementById('contact-message');
+var mapElement = document.getElementsByClassName("map-container");
+function closingContactWindow()
+{
+    try
+    {
+        if(contactPopup.style.display === "block" && popup.style.display ==="block")
+        {
+            contactPopup.style.display = "none";
+            mapElement.style.flex = "3";
+        }
+        else
+        {
+            contactPopup.style.display = "none";
+            mapElement.style.flex = "auto";
+        }
+    }
+    catch (e) {
+
+    }
+
+}
+var closeBtn = document.getElementById('closeBtn');
+closeBtn.addEventListener( 'click', closingContactWindow);
+/**
+ * Handling the Send Message button
+ */
+var sendButton = document.getElementById('send-message-button-popup');
+sendButton.addEventListener( 'click', function()
+{
+
+    var ownerEmailGet = document.getElementById('ownerEmail');
+    var messageInput = document.getElementById('message');
+    var dateTimeInput = document.getElementById('dateTime');
+    var messageValue = messageInput.value;
+    var dateTimeValue = dateTimeInput.value;
+    var ownerEmail =  ownerEmailGet.value;
+    alert("Success! Message sent!");
+    closingContactWindow();
+});
+
+/**
  * Addition of a popup button for window to the map
  */
 var popupButton = L.control({
@@ -284,6 +383,8 @@ popupButton.onAdd = function (map)
         }
 
     });
+
+
     /**
      * For a reason unkown to me and the internet this does not work together with
      * the popup window, hence an aditional method to handle how the button looks is

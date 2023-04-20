@@ -30,7 +30,36 @@
                 <div id="searchResultsContainer" class="scrollable-container"></div>
             </div>
             <div id="contact-message">
+                <div class="card">
+                    <div class="card-body">
+                        <button id="closeBtn" type="button" class="btn-close" aria-label="Close"></button>
+                        <h3 class="mb-3">Contact Owner</h3>
+                        <!-- Owner's Profile picture-->
+                        <div class="mb-3">
+                            <img src="" alt="" id="contact-profile-picture" >
+                        </div>
 
+                        <!-- Owner's Name -->
+                        <p class="mb-3">Owner's Name: <span id="ownerName"></span></p>
+                        <!-- Owner's Email -->
+                        <p class="mb-3">Owner's Email: <span id="ownerEmail"></span></p>
+                        <!-- Message Input -->
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message:</label>
+                            <input type="text" class="form-control" id="message" placeholder="Type your message here">
+                        </div>
+                        <!-- Date and Time Picker -->
+                        <div class="mb-3">
+                            <label for="dateTime" class="form-label">Date and Time:</label>
+                            <input type="datetime-local" class="form-control" id="dateTime">
+                        </div>
+                        <!-- Send Button -->
+                        <div class="d-grid">
+                            <div id="send-message-button-popup" class="btn btn-primary" tabindex="0">Send Message</div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
             <div id="map" class="map-container"></div>
 

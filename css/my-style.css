@@ -164,4 +164,10 @@ This is style for the popup in map.php
     padding: 5px;
     margin-bottom: 3px;
 }
+#contact-message
+{
+    display: none;
+    background-color: #f0ebeb;
+    flex: 1;
 
+}

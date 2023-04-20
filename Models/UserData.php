@@ -1,6 +1,6 @@
 <?php
 
-class UserData
+class UserData implements JsonSerializable
 {
     protected $_id, $_username , $_realName, $_password, $_profilePicture;
 
@@ -46,5 +46,9 @@ class UserData
     public function getProfilePicture()
     {
         return $this->_profilePicture;
+    }
+    public function jsonSerialize() : array
+    {
+        return ['userID'=>$this->_id,'username'=>$this->_username,'name'=>$this->_realName,'profilePicture'=>$this->_profilePicture,];// TODO: Implement jsonSerialize() method.
     }
 }
