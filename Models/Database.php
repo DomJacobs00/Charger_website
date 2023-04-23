@@ -6,9 +6,9 @@ class Database
     protected $_dbHandle;
     public static function getInstance() {
         $username ='age491';
-        $password = 'KnmdZaztLBC72gu';
+        $password = '';
         $host = 'poseidon.salford.ac.uk';
-        $dbName = 'age491';
+        $dbName = '';
         if(self::$_dbInstance === null) { //checks if the PDO exists
             // creates new instance if not, sending in connection info
             self::$_dbInstance = new self($username, $password, $host, $dbName);
